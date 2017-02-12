@@ -13,7 +13,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,11 +31,12 @@ public class LoginActivity extends AppCompatActivity {
         editTextU = (EditText) findViewById(R.id.input_usuario);
         editTextP = (EditText) findViewById(R.id.input_contrasena);
         getFileData();
+        //Esto es un comentario
     }
 
     public void clickLogin(View v){
         if(checkCredentials()){
-            Intent intent = new Intent(this,MainActivity.class);
+            Intent intent = new Intent(this,SearchActivity.class);
             startActivity(intent);
             clearLogin();
             return;
