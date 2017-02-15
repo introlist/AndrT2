@@ -1,5 +1,6 @@
 package com.example.demon.tarea2;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,8 +19,9 @@ import java.util.regex.Pattern;
 public class LoginActivity extends AppCompatActivity {
 
     EditText editTextE, editTextP;
-    List<User> users = new ArrayList<>();
-   
+    List<User> users;
+    private static final String LOGIN= "login";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +31,12 @@ public class LoginActivity extends AppCompatActivity {
         editTextP = (EditText) findViewById(R.id.input_contrasena);
         getFileData();
         SharedPreferences sharedPreferences = getSharedPreferences(LOGIN,0);
-        if(sharedPreferences.contains("usuario")){
+            if(sharedPreferences.contains("usuario")){
             Intent intent = new Intent(this,MainActivity.class);
-            startActivity(intent);}
+            startActivity(intent);
+            System.out.print("Pref ok");
+            this.finishActivity(0);
+        }
     }
 
     public void clickLogin(View v){
@@ -46,18 +51,32 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void alertaCredenciales(){
-        new AlertDialog.Builder(this)
-                .setTitle("cceso Denegado")
-                .setMessage("Las credenciales no concuerdan con la base de datos" +
-                        "\n Correctas: \n"+users.get(0).getEmail()+" \n y "+users.get(0).getPassword())
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        clearLogin();
-                    }
-                }).setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+        if(!users.isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Acceso Denegado")
+                    .setMessage("Las credenciales no concuerdan con la base de datos" +
+                            "\n Correctas: \n" + users.get(0).getEmail() + " \n y " + users.get(0).getPassword())
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearLogin();
+                        }
+                    }).setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
 
-        clearLogin();
+            clearLogin();
+        }else{
+            new AlertDialog.Builder(this)
+                    .setTitle("Acceso Denegado")
+                    .setMessage("Las credenciales no concuerdan con la base de datos")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearLogin();
+                        }
+                    }).setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+
+            clearLogin();
+        }
     }
 
 
@@ -68,8 +87,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean checkCredentials() {
           for (int i = 0; i<users.size();i++) {
-              if (editTextE.getText().toString().equals(users.get(i).getEmail())) {
-                  if (editTextP.getText().toString().equals(users.get(i).getPassword())) {
+              if (editTextE.getText().toString().trim().equals(users.get(i).getEmail())) {
+                  if (editTextP.getText().toString().trim().equals(users.get(i).getPassword())) {
+                      sharedPreferencesEdit(editTextE.getText().toString().trim(),editTextP.getText().toString().trim() );
                       return true;
                   }
               }
@@ -79,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
     private void getFileData() {
         UserDataSource userDS = new UserDataSource(getApplicationContext());
         userDS.open();
-        if(!userDS.getAllUsers().isEmpty()){
+        if(userDS.getAllUsers().isEmpty()){
             String email1 = "gilflo01@hotmail.com";
             String password1 = "123456";
             String email2 = "noemail";
@@ -108,8 +128,9 @@ public class LoginActivity extends AppCompatActivity {
                 uds.insertUser(email,password);
             }else{
                 new AlertDialog.Builder(this)
-                        .setTitle("Dato no ")
-                        .setMessage("Las credenciales no se introdujo a BD "+email)
+                        .setTitle("Dato no correcto")
+                        .setMessage("Una de las credenciales no se introdujo a Base de datos - Email: "+email+
+                                "\nPassword: "+password)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -120,13 +141,13 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
-    private static final String LOGIN= "login";
 
     private void sharedPreferencesEdit(String user, String pass){
-        SharedPreferences settings = getSharedPreferences(LOGIN,0); //0 means private mode
+
+        SharedPreferences settings = getSharedPreferences(LOGIN,Context.MODE_PRIVATE); //0 means private mode
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("usuario",user);
-        editor.putString("",pass);
+        editor.putString("pass",pass);
         editor.commit();
     }
 

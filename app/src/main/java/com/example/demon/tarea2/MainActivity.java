@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
 
 import com.example.demon.tarea2.AlumnoDataSource;
 import com.example.demon.tarea2.Alumno;
@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
                 matricula = alumnos.get(i).getMatricula();
                 licenciatura = alumnos.get(i).getLicenciatura();
                 Context context = getApplicationContext();
-                 new AlertDialog.Builder(context)
+
+                AlertDialog.Builder datosDiag =  new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Datos del alumno")
                         .setMessage("Nombre: " + nombre + "\n"
                                 + "Apellido: " + apellido + "\n"
@@ -61,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                             }
-                        }).setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
+                        }).setIcon(android.R.drawable.ic_dialog_alert);
 
+                datosDiag.show();
             }
         });
 
