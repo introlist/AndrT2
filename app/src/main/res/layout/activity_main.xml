@@ -1,13 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.demon.tarea2.MainActivity"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    -<RelativeLayout tools:context="com.example.gd.myapp.MainActivity" android:paddingTop="@dimen/activity_vertical_margin" android:paddingRight="@dimen/activity_horizontal_margin" android:paddingLeft="@dimen/activity_horizontal_margin" android:paddingBottom="@dimen/activity_vertical_margin" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:id="@+id/textView"
+        android:textAlignment="center"
+        android:text="Alumnos"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_centerHorizontal="true" android:layout_alignParentTop="true" android:id="@+id/textView" android:textAlignment="center" android:text="Alumnos" android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-    <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/button_alta" android:text="Alta" android:layout_alignParentStart="true" android:layout_alignParentLeft="true" android:layout_alignParentBottom="true" android:onClick="registerStudent"/>
 
-    <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/button_salir" android:text="Salir" android:layout_alignParentBottom="true" android:onClick="exit" android:layout_alignParentEnd="true" android:layout_alignParentRight="true"/>
+    <ListView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/listViewStudents"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/button_alta"
+        android:layout_below="@+id/textView"
+        android:padding="15dp"/>
 
-    <ListView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/listViewStudents" android:layout_alignParentStart="true" android:layout_alignParentLeft="true" android:layout_above="@+id/button_alta" android:layout_below="@+id/textView" android:padding="15dp"/>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="15dp"
+        android:id="@+id/button_alta"
+        android:onClick="registerStudent"
 
-</RelativeLayout>
+
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:elevation="14dp"
+        app:rippleColor="@android:color/background_dark" />
+
+</android.support.design.widget.CoordinatorLayout>

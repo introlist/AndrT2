@@ -2,41 +2,41 @@ package com.example.demon.tarea2;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText editTextU, editTextP;
-    List<String> users = new ArrayList<>();
-    List<String> passwords = new ArrayList<>();
+    EditText editTextE, editTextP;
+    List<User> users = new ArrayList<>();
+   
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_linear_layout);
-        writeCredentialsFile();
-        editTextU = (EditText) findViewById(R.id.input_usuario);
+        editTextE = (EditText) findViewById(R.id.input_usuario);
         editTextP = (EditText) findViewById(R.id.input_contrasena);
         getFileData();
-        //Esto es un comentario
+        SharedPreferences sharedPreferences = getSharedPreferences(LOGIN,0);
+        if(sharedPreferences.contains("usuario")){
+            Intent intent = new Intent(this,MainActivity.class);
+            startActivity(intent);}
     }
 
     public void clickLogin(View v){
         if(checkCredentials()){
-            Intent intent = new Intent(this,SearchActivity.class);
+            Intent intent = new Intent(this,MainActivity.class);
             startActivity(intent);
             clearLogin();
             return;
@@ -47,8 +47,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void alertaCredenciales(){
         new AlertDialog.Builder(this)
-                .setTitle("Acceso Denegado")
-                .setMessage("Las credenciales no concuerdan con la base de datos")
+                .setTitle("cceso Denegado")
+                .setMessage("Las credenciales no concuerdan con la base de datos" +
+                        "\n Correctas: \n"+users.get(0).getEmail()+" \n y "+users.get(0).getPassword())
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         clearLogin();
@@ -59,68 +60,74 @@ public class LoginActivity extends AppCompatActivity {
         clearLogin();
     }
 
-    private void writeCredentialsFile() {
-        String eol = System.getProperty("line.separator");
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(openFileOutput("myfile.txt", MODE_PRIVATE)));
-            writer.write("user,");
-            writer.write("password" + eol);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     private void clearLogin(){
-        editTextU.setText("");
+        editTextE.setText("");
         editTextP.setText("");
     }
 
     private boolean checkCredentials() {
           for (int i = 0; i<users.size();i++) {
-              if (editTextU.getText().toString().equals(users.get(i))) {
-                  if (editTextP.getText().toString().equals(passwords.get(i))) {
+              if (editTextE.getText().toString().equals(users.get(i).getEmail())) {
+                  if (editTextP.getText().toString().equals(users.get(i).getPassword())) {
                       return true;
                   }
               }
           }
-    return false;
-    }
+    return false;    }
 
     private void getFileData() {
-        String eol = System.getProperty("line.separator");
-        BufferedReader input = null;
-        List<String> parts = new ArrayList();
-        try {
-            input = new BufferedReader(new InputStreamReader(openFileInput("myfile.txt")));
-            String line;
-            while ((line = input.readLine()) != null) {
-               parts = Arrays.asList(line.split(","));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        UserDataSource userDS = new UserDataSource(getApplicationContext());
+        userDS.open();
+        if(!userDS.getAllUsers().isEmpty()){
+            String email1 = "gilflo01@hotmail.com";
+            String password1 = "123456";
+            String email2 = "noemail";
+            String password2 = "123456";
+            validateCredentialsCreation(email1, password1, userDS);
+            validateCredentialsCreation(email2, password2, userDS);
+
+            
         }
-        users.add(parts.get(0));
-        //editTextU.setText(users.get(0));
-        passwords.add(parts.get(1));
-       // editTextP.setText(passwords.get(0));
+        //userDS.insertUser("Roberto","Gil");
+        users = userDS.getAllUsers();
+        userDS.close();
+
+    }
+
+    private void
+     validateCredentialsCreation(String email,String password, UserDataSource uds ) {
+        Pattern p;
+        Matcher m;
+        String EMAIL_PATTERN =
+                "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        p = Pattern.compile(EMAIL_PATTERN);
+        m = p.matcher(email);
+            if(m.matches()){
+                uds.insertUser(email,password);
+            }else{
+                new AlertDialog.Builder(this)
+                        .setTitle("Dato no ")
+                        .setMessage("Las credenciales no se introdujo a BD "+email)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+
+        }
+
+    private static final String LOGIN= "login";
+
+    private void sharedPreferencesEdit(String user, String pass){
+        SharedPreferences settings = getSharedPreferences(LOGIN,0); //0 means private mode
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("usuario",user);
+        editor.putString("",pass);
+        editor.commit();
     }
 
 }
