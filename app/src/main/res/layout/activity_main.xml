@@ -28,7 +28,6 @@
         android:id="@+id/listViewStudents"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_above="@+id/button_alta"
         android:layout_below="@+id/textView"
         android:padding="15dp"/>
 

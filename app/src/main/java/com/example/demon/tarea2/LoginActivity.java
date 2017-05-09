@@ -10,8 +10,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import java.util.ArrayList;
+/*import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
+import com.estimote.sdk.SystemRequirementsChecker;
 
+import java.util.UUID;*/
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,22 +25,53 @@ public class LoginActivity extends AppCompatActivity {
     EditText editTextE, editTextP;
     List<User> users;
     private static final String LOGIN= "login";
-
+   // private BeaconManager beaconManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_linear_layout);
+       // beaconManager = new BeaconManager(getApplicationContext());
+
+
         editTextE = (EditText) findViewById(R.id.input_usuario);
         editTextP = (EditText) findViewById(R.id.input_contrasena);
         getFileData();
         SharedPreferences sharedPreferences = getSharedPreferences(LOGIN,0);
-            if(sharedPreferences.contains("usuario")){
+           if(sharedPreferences.contains("usuario")){
             Intent intent = new Intent(this,MainActivity.class);
             startActivity(intent);
             System.out.print("Pref ok");
             this.finishActivity(0);
         }
+
+       /* beaconManager = new BeaconManager(getApplicationContext());
+
+        beaconManager.setMonitoringListener(new BeaconManager.MonitoringListener() {
+            @Override
+            public void onEnteredRegion(Region region, List<Beacon> list) {
+                setContentView(R.layout.login_linear_layout);
+            }
+            @Override
+            public void onExitedRegion(Region region) {
+               LoginActivity.super.finish();
+            }
+        });
+
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startMonitoring(new Region(
+                        "monitored region",
+                        UUID.fromString("63B4D01E-9D57-F74E-B4FE-1713BE20EC0F"),
+                        63463, 21120));
+//                UUID.fromString("CB806A42-320A-033A-CA3D-7A45DC5025E6"),
+//                        56576, 58978));
+//                UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"),
+//                        65074, 39598));
+            }
+        });*/
+
+
     }
 
     public void clickLogin(View v){

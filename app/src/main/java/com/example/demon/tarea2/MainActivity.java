@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOGIN= "login";
     List<Alumno> alumnos;
     ArrayList<String> nombresAlumnos = new ArrayList<>();
-    ArrayAdapter arrayAdapter;
+    ArrayAdapter arrayAdapter = new ArrayAdapter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
